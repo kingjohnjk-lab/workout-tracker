@@ -126,6 +126,32 @@ tr.click{cursor:pointer} tr.sel td{background:var(--accent-soft)}
 .file{position:relative;overflow:hidden}
 .file input{position:absolute;inset:0;opacity:0;cursor:pointer}
 .gridbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* ---------- rest timer ---------- */
+.rest-fab{position:fixed;right:max(14px,calc(50% - 326px));bottom:calc(78px + env(safe-area-inset-bottom));z-index:12;width:66px;height:66px;border-radius:50%;
+  border:0;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:17px;line-height:1.05;display:none;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(16,24,40,.28);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.rest-fab .ic{font-size:20px}
+.rest-fab:active{transform:scale(.95)}
+body.v-log:not(.resting) .rest-fab{display:flex}
+.rest-offer{position:fixed;right:max(90px,calc(50% - 250px));bottom:calc(88px + env(safe-area-inset-bottom));z-index:12;display:none;min-height:46px;padding:8px 14px;border-radius:999px;
+  border:1.5px solid var(--accent);background:var(--card);color:var(--accent);font-weight:700;font-size:15px;box-shadow:0 4px 14px rgba(16,24,40,.2);cursor:pointer;touch-action:manipulation}
+body.v-log:not(.resting) .rest-offer.show{display:block}
+.rest-panel{position:fixed;left:0;right:0;bottom:calc(65px + env(safe-area-inset-bottom));z-index:11;display:none;background:var(--card);border-top:1px solid var(--line);
+  box-shadow:0 -4px 16px rgba(16,24,40,.12);padding:8px 12px 10px}
+body.resting .rest-panel{display:block}
+body.resting{padding-bottom:calc(84px + 150px + env(safe-area-inset-bottom))}
+.rest-panel .in{max-width:680px;margin:0 auto}
+.rest-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rest-lbl{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.rest-time{font-size:56px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:1px;text-align:center;flex:1}
+.rest-panel.paused .rest-time{opacity:.55}
+.rest-panel.over{background:var(--good-soft)}
+.rest-panel.over .rest-time{color:var(--good);font-size:40px;animation:restblink 1s ease-in-out 4}
+@keyframes restblink{50%{opacity:.35}}
+.rest-btns{display:grid;grid-template-columns:1fr 1fr 1.3fr 1.3fr 1fr;gap:6px;margin-top:8px}
+.rest-btns .btn{min-height:46px;padding:6px 4px;font-size:15px}
+.rest-panel.over .rest-adj{visibility:hidden}
+body.resting .toast{bottom:calc(90px + 140px + env(safe-area-inset-bottom))}
 @media (max-width:360px){ .sethead,.setrow{grid-template-columns:28px 1fr 14px 1fr 46px} .gridbtn{grid-template-columns:1fr} }
 </style>
 </head>
@@ -140,6 +166,18 @@ tr.click{cursor:pointer} tr.sel td{background:var(--accent-soft)}
   <button data-act="go" data-view="data" id="tab-data"><span class="ic">💾</span>Backup</button>
 </div></nav>
 <div class="toast" id="toast" role="status"></div>
+<button class="rest-offer" id="restOffer" data-rest="start" type="button">▶ Start rest 1:30</button>
+<button class="rest-fab" id="restFab" data-rest="start" type="button" aria-label="Start 90 second rest timer"><span class="ic">⏱</span>90s</button>
+<section class="rest-panel" id="restPanel" aria-label="Rest timer"><div class="in">
+  <div class="rest-top"><span class="rest-lbl" id="restLbl">Rest</span><div class="rest-time" id="restTime" role="timer" aria-live="off">1:30</div><span class="rest-lbl" style="visibility:hidden">Rest</span></div>
+  <div class="rest-btns">
+    <button class="btn rest-adj" data-rest="minus" type="button" aria-label="Subtract 15 seconds">−15s</button>
+    <button class="btn rest-adj" data-rest="plus" type="button" aria-label="Add 15 seconds">+15s</button>
+    <button class="btn rest-adj" id="restPause" data-rest="pause" type="button">⏸ Pause</button>
+    <button class="btn primary" data-rest="start" id="restRestart" type="button" aria-label="Restart at 1:30">↺ 1:30</button>
+    <button class="btn" data-rest="cancel" id="restCancel" type="button" aria-label="Cancel rest timer">✕</button>
+  </div>
+</div></section>
 <script>
 'use strict';
 /* Seed data extracted from the user's spreadsheet (program + any logged History Log rows). */
@@ -254,6 +292,7 @@ function placeholders(ex, k, last) {
 /* ---------- rendering ---------- */
 function render() {
   document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('on', b.dataset.view === view));
+  document.body.classList.toggle('v-log', view === 'log');
   $('#todayLbl').textContent = new Date().toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'});
   $('#sub').textContent = days().map(d => titleCase(d.name)).join(' · ') || 'No days yet';
   const fn = {log: renderLog, history: renderHistory, progress: renderProgress, program: renderProgram, data: renderData}[view];
@@ -515,6 +554,8 @@ function renderData() {
   const n = state.workouts.length, rows = state.workouts.reduce((a, w) => a + (w.entries || []).length, 0);
   return `<section class="card"><h2>Units</h2><div class="small muted" style="margin-bottom:8px">Label only — numbers are not converted.</div>
     <div class="seg">${['lb', 'kg'].map(x => `<button data-act="unit" data-u="${x}" class="${unit() === x ? 'on' : ''}">${x}</button>`).join('')}</div></section>
+  <section class="card"><h2>Rest timer</h2><div class="small muted" style="margin-bottom:8px">Tap the ⏱ 90s button on the Log screen any time. Optionally show a “Start rest” shortcut after you tick a set ✓ (it never starts by itself).</div>
+    <div class="seg">${[['on', 'Offer after ✓'], ['off', 'Button only']].map(([v, l]) => `<button data-act="restOffer" data-v="${v}" class="${(rest.offer !== false) === (v === 'on') ? 'on' : ''}">${l}</button>`).join('')}</div></section>
   <section class="card"><h2>Back up your data</h2>
     <div class="small muted" style="margin-bottom:10px">Everything is stored only in this browser on this device (${n} workout${n === 1 ? '' : 's'}, ${rows} exercise entries). Export regularly so you never lose it. ${state.lastExport ? 'Last export: ' + esc(new Date(state.lastExport).toLocaleString()) + '.' : 'No export yet.'}</div>
     <div class="gridbtn"><button class="btn primary" data-act="exportJSON">⬇ Backup (JSON)</button><button class="btn" data-act="exportCSV">⬇ Export CSV</button></div>
@@ -752,7 +793,7 @@ document.addEventListener('click', e => {
         if (s.r === '' && ph.r) s.r = ph.r;
         if (en.sets.every(x => x.done)) en.done = true;
       } else en.done = false;
-      save(); render(); break;
+      save(); render(); if (s.done) restOfferShow(); break;
     }
     case 'toggleEx': { const en = draftEntry(exById(b.dataset.ex)); en.done = !en.done; save(); render(); break; }
     case 'addSet': { const en = draftEntry(exById(b.dataset.ex)); const l = en.sets[en.sets.length - 1] || {}; en.sets.push({w: l.w || '', r: '', done: false}); en.done = false; save(); render(); break; }
@@ -793,6 +834,7 @@ document.addEventListener('click', e => {
     case 'exDel': { const day = findDay(b.dataset.day), ex = day.exercises.find(x => x.id === b.dataset.exid); if (confirm(`Remove “${ex.name}” from ${day.name}?\n(Its history is kept.)`)) { day.exercises = day.exercises.filter(x => x !== ex); save(); render(); } break; }
     case 'resetProgram': if (confirm('Reset days & exercises to the original spreadsheet program? Your logged workouts are kept.')) { state.program = clone(SEED.program); state.draft = null; save(); render(); toast('Program reset'); } break;
     case 'unit': state.unit = b.dataset.u; save(); render(); break;
+    case 'restOffer': rest.offer = b.dataset.v === 'on'; restSave(); render(); break;
     case 'exportJSON': download(`workout-backup-${todayStr()}.json`, JSON.stringify(Object.assign({app: 'workout-tracker', exportedAt: new Date().toISOString()}, state), null, 1), 'application/json'); markExported(); toast('Backup downloaded'); render(); break;
     case 'exportCSV': download(`workout-history-${todayStr()}.csv`, buildCSV(), 'text/csv'); markExported(); toast('CSV downloaded'); render(); break;
     case 'wipe':
@@ -827,10 +869,115 @@ document.addEventListener('change', e => {
   save(); $('#sub').textContent = days().map(d => titleCase(d.name)).join(' · '); toast('Saved');
 });
 
+
+/* ---------- rest timer ----------
+   Kept in its own localStorage key so the workout data format is untouched.
+   Accuracy: remaining time is always computed from a stored end timestamp (Date.now()), never by counting ticks,
+   so it stays right if the phone screen is off / the tab is in the background. */
+const REST_KEY = 'workoutTracker.rest';
+const REST_SECS = 90;
+let rest = (() => { try { const r = JSON.parse(localStorage.getItem(REST_KEY) || 'null'); if (r && typeof r === 'object') return r; } catch (e) {} return {}; })();
+/* rest = { endAt: ms|null (running), pausedLeft: ms|null (paused), overAt: ms|null (finished, showing "Rest over"), offer: bool } */
+let restTick = null, restEndT = null, restOfferT = null, restAudio = null, restWake = null;
+function restSave() { try { localStorage.setItem(REST_KEY, JSON.stringify(rest)); } catch (e) {} }
+function restLeft() { return rest.endAt ? rest.endAt - Date.now() : (rest.pausedLeft != null ? rest.pausedLeft : null); }
+function restFmt(ms) { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + pad2(s % 60); }
+function restUnlockAudio() {   /* must run inside a user tap so Chrome allows sound later */
+  try { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; if (!restAudio) restAudio = new AC(); if (restAudio.state === 'suspended') restAudio.resume(); } catch (e) {}
+}
+function restBeep() {
+  try {
+    if (!restAudio) restUnlockAudio(); if (!restAudio) return; if (restAudio.state === 'suspended') restAudio.resume();
+    const t0 = restAudio.currentTime + 0.02;
+    [0, 0.28, 0.56].forEach((dt, i) => {
+      const o = restAudio.createOscillator(), g = restAudio.createGain();
+      o.type = 'sine'; o.frequency.value = i === 2 ? 1320 : 880;
+      g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(0.5, t0 + dt + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + (i === 2 ? 0.45 : 0.2));
+      o.connect(g); g.connect(restAudio.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.5);
+    });
+  } catch (e) {}
+}
+async function restWakeOn() {
+  try { if ('wakeLock' in navigator && !restWake && document.visibilityState === 'visible') { restWake = await navigator.wakeLock.request('screen'); restWake.addEventListener('release', () => { restWake = null; }); } } catch (e) { restWake = null; }
+}
+function restWakeOff() { try { if (restWake) restWake.release(); } catch (e) {} restWake = null; }
+function restSchedule() {
+  clearInterval(restTick); clearTimeout(restEndT); restTick = restEndT = null;
+  if (rest.endAt) {
+    restTick = setInterval(restUpdate, 250);
+    restEndT = setTimeout(restUpdate, Math.max(0, rest.endAt - Date.now()) + 20);
+  }
+}
+function restStart() {
+  restUnlockAudio();
+  rest.endAt = Date.now() + REST_SECS * 1000; rest.pausedLeft = null; rest.overAt = null; restSave();
+  restOfferHide(); restWakeOn(); restSchedule(); restUpdate();
+}
+function restPauseToggle() {
+  restUnlockAudio();
+  if (rest.endAt) { rest.pausedLeft = Math.max(0, rest.endAt - Date.now()); rest.endAt = null; restWakeOff(); }
+  else if (rest.pausedLeft != null) { rest.endAt = Date.now() + rest.pausedLeft; rest.pausedLeft = null; restWakeOn(); }
+  restSave(); restSchedule(); restUpdate();
+}
+function restAdjust(sec) {
+  if (rest.endAt) rest.endAt = Math.max(Date.now() + 1000, rest.endAt + sec * 1000);
+  else if (rest.pausedLeft != null) rest.pausedLeft = Math.max(1000, rest.pausedLeft + sec * 1000);
+  else return;
+  restSave(); restSchedule(); restUpdate();
+}
+function restCancel() {
+  rest.endAt = null; rest.pausedLeft = null; rest.overAt = null; restSave();
+  restWakeOff(); restSchedule(); restUpdate();
+}
+function restFinish(silent) {
+  const endAt = rest.endAt; rest.endAt = null; rest.pausedLeft = null; rest.overAt = endAt || Date.now(); restSave();
+  restSchedule(); restWakeOff();
+  if (!silent) {
+    try { if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 700]); } catch (e) {}
+    restBeep();
+  }
+}
+function restUpdate() {
+  const panel = $('#restPanel'); if (!panel) return;
+  if (rest.endAt && rest.endAt - Date.now() <= 0) restFinish(Date.now() - rest.endAt > 60000);   /* only buzz if we're within a minute of zero */
+  if (rest.overAt && Date.now() - rest.overAt > 600000) { rest.overAt = null; restSave(); }   /* stale "Rest over" (e.g. app reopened later) */
+  const left = restLeft(), over = !!rest.overAt && left == null, active = left != null || over;
+  document.body.classList.toggle('resting', active);
+  panel.classList.toggle('over', over); panel.classList.toggle('paused', !rest.endAt && rest.pausedLeft != null);
+  $('#restTime').textContent = over ? 'Rest over 💪' : restFmt(left == null ? REST_SECS * 1000 : left);
+  $('#restLbl').textContent = over ? 'Done' : (rest.endAt ? 'Rest' : 'Paused');
+  $('#restPause').textContent = rest.endAt ? '⏸ Pause' : '▶ Resume';
+  $('#restCancel').textContent = over ? 'OK' : '✕';
+  $('#restCancel').setAttribute('aria-label', over ? 'Dismiss' : 'Cancel rest timer');
+  const title = 'Workout Tracker';
+  document.title = rest.endAt ? restFmt(left) + ' rest · ' + title : (over ? 'Rest over · ' + title : title);
+}
+function restOfferShow() {
+  if (rest.offer === false || rest.endAt || rest.pausedLeft != null) return;
+  if (rest.overAt) { rest.overAt = null; restSave(); restUpdate(); }
+  const o = $('#restOffer'); if (!o) return;
+  o.classList.add('show'); clearTimeout(restOfferT); restOfferT = setTimeout(restOfferHide, 6000);
+}
+function restOfferHide() { clearTimeout(restOfferT); const o = $('#restOffer'); if (o) o.classList.remove('show'); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-rest]'); if (!b) return;
+  switch (b.dataset.rest) {
+    case 'start': restStart(); break;      /* also = restart at 1:30 while running */
+    case 'pause': restPauseToggle(); break;
+    case 'plus': restAdjust(15); break;
+    case 'minus': restAdjust(-15); break;
+    case 'cancel': restCancel(); break;
+  }
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') { restUpdate(); if (rest.endAt) restWakeOn(); }
+});
+
 /* ---------- boot ---------- */
 state = load();
 save();
 render();
+restSchedule(); restUpdate();
 </script>
 </body>
 </html>
