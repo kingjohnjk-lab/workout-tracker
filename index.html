@@ -55,6 +55,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .btn.block{width:100%}
 .actions{display:grid;gap:10px;margin:4px 0 16px}
 .pill{display:inline-block;white-space:nowrap;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.pill.opt{background:#eee;color:#666;font-size:11px;vertical-align:middle}
+.exnote2{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.3}
+.guide{font-size:13px;line-height:1.45;background:var(--accent-soft)}
+.ready{margin:6px 0;padding:6px 10px;border-radius:10px;background:var(--good-soft);color:var(--good);font-size:13px;font-weight:700}
 .pill.pr{background:var(--pr-soft);color:var(--pr)} .pill.good{background:var(--good-soft);color:var(--good)}
 .daypick{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
 .daybtn{min-height:64px;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:16px;cursor:pointer;padding:6px;line-height:1.15}
@@ -181,7 +185,7 @@ body.resting .toast{bottom:calc(90px + 140px + env(safe-area-inset-bottom))}
 <script>
 'use strict';
 /* Seed data extracted from the user's spreadsheet (program + any logged History Log rows). */
-const SEED = {"source":{"file":"Workout_Program_Push_Pull_Legs_PR_History.xlsx","sheets":["Progress Summary","History Log","Day 1 - PUSH","Day 2 - PULL","Day 3 - LEGS & CORE"],"extracted":"2026-09-30"},"program":{"days":[{"id":"push","name":"PUSH","exercises":[{"id":"push-mts-incline-chest-press","name":"MTS Incline Chest Press","sets":4,"reps":"","weight":""},{"id":"push-mts-chest-press-flat-or-standard-chest-p","name":"MTS Chest Press (flat) or standard Chest Press Machine","sets":4,"reps":"","weight":""},{"id":"push-pec-deck-machine-chest-fly","name":"Pec Deck Machine (Chest Fly)","sets":4,"reps":"","weight":""},{"id":"push-mts-shoulder-press-or-standard-shoulder","name":"MTS Shoulder Press or standard Shoulder Press Machine","sets":4,"reps":"","weight":""},{"id":"push-lateral-raise-machine","name":"Lateral Raise Machine","sets":4,"reps":"","weight":""},{"id":"push-cable-tricep-pushdown-rope-or-straight-b","name":"Cable Tricep Pushdown (rope or straight bar)","sets":4,"reps":"","weight":""}]},{"id":"pull","name":"PULL","exercises":[{"id":"pull-mts-lat-pulldown-front-pulldown","name":"MTS Lat Pulldown / Front Pulldown","sets":4,"reps":"","weight":""},{"id":"pull-mts-seated-row-or-low-row-machine","name":"MTS Seated Row or Low Row Machine","sets":4,"reps":"","weight":""},{"id":"pull-reverse-pec-deck-rear-delt-fly","name":"Reverse Pec Deck (Rear Delt Fly)","sets":4,"reps":"","weight":""},{"id":"pull-bicep-curl-machine","name":"Bicep Curl Machine","sets":4,"reps":"","weight":""},{"id":"pull-cable-bicep-curl-straight-bar-or-ez","name":"Cable Bicep Curl (straight bar or EZ)","sets":4,"reps":"","weight":""},{"id":"pull-lower-back-extension-machine","name":"Lower Back Extension Machine","sets":4,"reps":"","weight":""}]},{"id":"legs-core","name":"LEGS & CORE","exercises":[{"id":"legs-core-seated-leg-press-machine","name":"Seated Leg Press Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-leg-extension-machine","name":"Leg Extension Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-seated-leg-curl-machine","name":"Seated Leg Curl Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-seated-calf-raise-machine","name":"Seated Calf Raise Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-hip-abductor-machine","name":"Hip Abductor Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-hip-adductor-machine-or-glute-kickback-m","name":"Hip Adductor Machine or Glute Kickback Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-mts-abdominal-crunch-machine","name":"MTS Abdominal Crunch Machine","sets":4,"reps":"","weight":""}]}]},"history":[]};
+const SEED = {"source": {"file": "Workout_Program_Push_Pull_Legs_PR_History.xlsx", "sheets": ["Progress Summary", "History Log", "Day 1 - PUSH", "Day 2 - PULL", "Day 3 - LEGS & CORE"], "extracted": "2026-09-30"}, "program": {"days": [{"id": "push", "name": "PUSH", "exercises": [{"id": "push-mts-incline-chest-press", "name": "MTS Incline Chest Press", "sets": 4, "reps": "", "weight": ""}, {"id": "push-mts-chest-press-flat-or-standard-chest-p", "name": "MTS Chest Press (flat) or standard Chest Press Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "push-pec-deck-machine-chest-fly", "name": "Pec Deck Machine (Chest Fly)", "sets": 4, "reps": "", "weight": ""}, {"id": "push-mts-shoulder-press-or-standard-shoulder", "name": "MTS Shoulder Press or standard Shoulder Press Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "push-lateral-raise-machine", "name": "Lateral Raise Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "push-cable-tricep-pushdown-rope-or-straight-b", "name": "Cable Tricep Pushdown (rope or straight bar)", "sets": 4, "reps": "", "weight": ""}]}, {"id": "pull", "name": "PULL", "exercises": [{"id": "pull-mts-lat-pulldown-front-pulldown", "name": "MTS Lat Pulldown / Front Pulldown", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-mts-seated-row-or-low-row-machine", "name": "MTS Seated Row or Low Row Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-reverse-pec-deck-rear-delt-fly", "name": "Reverse Pec Deck (Rear Delt Fly)", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-bicep-curl-machine", "name": "Bicep Curl Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-cable-bicep-curl-straight-bar-or-ez", "name": "Cable Bicep Curl (straight bar or EZ)", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-lower-back-extension-machine", "name": "Lower Back Extension Machine", "sets": 4, "reps": "", "weight": ""}]}, {"id": "legs-core", "name": "LEGS & CORE", "exercises": [{"id": "legs-core-seated-leg-press-machine", "name": "Seated Leg Press Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-leg-extension-machine", "name": "Leg Extension Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-seated-leg-curl-machine", "name": "Seated Leg Curl Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-seated-calf-raise-machine", "name": "Seated Calf Raise Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-hip-abductor-machine", "name": "Hip Abductor Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-hip-adductor-machine-or-glute-kickback-m", "name": "Hip Adductor Machine or Glute Kickback Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-mts-abdominal-crunch-machine", "name": "MTS Abdominal Crunch Machine", "sets": 4, "reps": "", "weight": ""}]}, {"id": "fullbody-a", "name": "Full Body A", "subtitle": "Thu night", "dow": 4, "guidance": "Muscle retention while cutting • 6–12 reps, stop with 1–2 reps in reserve • When you hit 12 reps on all sets with 1–2 in reserve, add weight next time (about 5 lb upper / 10 lb lower) and drop back toward 6–8 reps.", "exercises": [{"id": "fba-leg-press-squat", "name": "Leg Press / Goblet or Front Squat", "sets": 4, "reps": "6–12", "weight": "", "note": "Leg press, or goblet/front squat with dumbbell, kettlebell, or Olympic bar • 3–4 sets", "optional": false, "lower": true}, {"id": "fba-chest-press", "name": "Chest Press / Cable Fly", "sets": 3, "reps": "6–12", "weight": "", "note": "Chest press (machine, dumbbell, or bar) or cable fly/press", "optional": false, "lower": false}, {"id": "fba-lat-pulldown", "name": "Lat Pulldown / Pull-ups", "sets": 3, "reps": "6–12", "weight": "", "note": "Lat pulldown, or assisted/weighted pull-ups", "optional": false, "lower": false}, {"id": "fba-rdl-hinge", "name": "Romanian Deadlift / KB Swing", "sets": 3, "reps": "6–12", "weight": "", "note": "Romanian deadlift, or kettlebell swing/hinge variation", "optional": false, "lower": true}, {"id": "fba-opt-row", "name": "Optional: Row (cable/DB)", "sets": 3, "reps": "6–12", "weight": "", "note": "Cable or dumbbell row", "optional": true, "lower": false}, {"id": "fba-opt-lateral-raise", "name": "Optional: Lateral Raise", "sets": 3, "reps": "6–12", "weight": "", "note": "Dumbbell, cable, or machine lateral raise", "optional": true, "lower": false}, {"id": "fba-opt-core", "name": "Optional: Core", "sets": 3, "reps": "6–12", "weight": "", "note": "Any core movement — reps or seconds", "optional": true, "lower": false}]}, {"id": "fullbody-b", "name": "Full Body B", "subtitle": "Fri morning", "dow": 5, "guidance": "Muscle retention while cutting • 6–12 reps, stop with 1–2 reps in reserve • When you hit 12 reps on all sets with 1–2 in reserve, add weight next time (about 5 lb upper / 10 lb lower) and drop back toward 6–8 reps.", "exercises": [{"id": "fbb-rdl-curl-split", "name": "RDL / Leg Curl + Ext / Bulgarian Split Squat", "sets": 4, "reps": "6–12", "weight": "", "note": "Romanian deadlift, or leg curl + leg extension, or Bulgarian split squat • 3–4 sets", "optional": false, "lower": true}, {"id": "fbb-ohp-incline", "name": "Overhead Press / Incline Press", "sets": 3, "reps": "6–12", "weight": "", "note": "Overhead press or incline press", "optional": false, "lower": false}, {"id": "fbb-row", "name": "Seated / Bent-over Row", "sets": 3, "reps": "6–12", "weight": "", "note": "Seated or bent-over row (cable, dumbbell, or bar)", "optional": false, "lower": false}, {"id": "fbb-leg-press-squat", "name": "Leg Press / Squat Variation", "sets": 3, "reps": "6–12", "weight": "", "note": "Leg press or a squat variation — pick a different one from Thursday", "optional": false, "lower": true}, {"id": "fbb-opt-face-pulls", "name": "Optional: Face Pulls", "sets": 3, "reps": "6–12", "weight": "", "note": "Cable or band face pulls", "optional": true, "lower": false}, {"id": "fbb-opt-arms", "name": "Optional: Biceps/Triceps", "sets": 3, "reps": "6–12", "weight": "", "note": "Any biceps or triceps movement", "optional": true, "lower": false}, {"id": "fbb-opt-core", "name": "Optional: Core", "sets": 3, "reps": "6–12", "weight": "", "note": "Any core movement — reps or seconds", "optional": true, "lower": false}]}]}, "history": [], "programVersion": 2, "migrations": [{"v": 2, "days": ["fullbody-a", "fullbody-b"]}]};
 const KEY = 'workoutTracker.v1';
 
 /* ---------- helpers ---------- */
@@ -208,15 +212,31 @@ let view = 'log';
 const ui = { progressEx: null, metric: 'e1rm', open: {}, noteOpen: {} };
 
 function defaultState() {
-  return { version: 1, unit: 'lb', program: clone(SEED.program), workouts: clone(SEED.history || []),
+  return { version: 1, programVersion: SEED.programVersion, unit: 'lb', program: clone(SEED.program), workouts: clone(SEED.history || []),
     draft: null, lastExport: null, createdAt: Date.now() };
 }
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = JSON.parse(raw); if (s && s.program && Array.isArray(s.program.days) && Array.isArray(s.workouts)) return s; }
+    if (raw) { const s = JSON.parse(raw); if (s && s.program && Array.isArray(s.program.days) && Array.isArray(s.workouts)) return migrate(s); }
   } catch (e) { console.warn('load failed', e); }
   return defaultState();
+}
+/* Program migrations: add new built-in days to existing users' programs once.
+   Existing days, edits and history are never touched. programVersion records that a
+   migration ran, so a day the user later deletes is not re-added. */
+function migrate(s) {
+  const pv = +s.programVersion || 1;
+  for (const mg of SEED.migrations || []) {
+    if (pv >= mg.v) continue;
+    for (const id of mg.days) {
+      if (s.program.days.some(d => d.id === id)) continue;
+      const sd = SEED.program.days.find(d => d.id === id);
+      if (sd) s.program.days.push(clone(sd));
+    }
+  }
+  if (pv < SEED.programVersion) { s.programVersion = SEED.programVersion; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  return s;
 }
 let storageWarned = false;
 function save() {
@@ -263,10 +283,14 @@ const unit = () => state.unit || 'lb';
 function suggestedDayId() {
   const ws = sortedWorkouts(); const ds = days();
   if (!ds.length) return null;
-  if (!ws.length) return ds[0].id;
+  const dow = new Date().getDay();
+  const today = ds.find(d => d.dow === dow);   /* Full Body A on Thursdays, B on Fridays */
+  if (today) return today.id;
+  const rot = ds.filter(d => d.dow == null); const pool = rot.length ? rot : ds;
+  if (!ws.length) return pool[0].id;
   const last = ws[ws.length - 1];
-  const i = ds.findIndex(d => d.id === last.dayId || norm(d.name) === norm(last.dayName));
-  return i < 0 ? ds[0].id : ds[(i + 1) % ds.length].id;
+  const i = pool.findIndex(d => d.id === last.dayId || norm(d.name) === norm(last.dayName));
+  return i < 0 ? pool[0].id : pool[(i + 1) % pool.length].id;
 }
 function newDraft(dayId) { return { date: todayStr(), dayId, notes: '', entries: {}, orphans: [], editingId: null, startedAt: Date.now() }; }
 function ensureDraft() {
@@ -316,22 +340,33 @@ function renderLog() {
     <div class="row between"><label class="lbl" for="dDate">Date</label>${d.editingId ? '<span class="pill">Editing a saved workout</span>' : ''}</div>
     <input type="date" id="dDate" data-field="date" value="${esc(d.date)}">
     <div class="lbl" style="margin-top:12px">Which workout today?</div>
-    <div class="daypick">${days().map((x, i) => `<button class="daybtn ${x.id === d.dayId ? 'on' : ''}" data-act="pickDay" data-id="${esc(x.id)}"><small>Day ${i + 1}</small>${esc(x.name)}</button>`).join('')}</div>
-    ${!d.editingId && sug && state.workouts.length ? `<div class="hint">Up next in your rotation: <b>${esc(dayById(sug).name)}</b></div>` : ''}
+    <div class="daypick">${days().map((x, i) => `<button class="daybtn ${x.id === d.dayId ? 'on' : ''}" data-act="pickDay" data-id="${esc(x.id)}"><small>${esc(x.subtitle || 'Day ' + (i + 1))}</small>${esc(x.name)}</button>`).join('')}</div>
+    ${!d.editingId && sug && (state.workouts.length || dayById(sug).dow != null) ? `<div class="hint">Up next in your rotation: <b>${esc(dayById(sug).name)}</b></div>` : ''}
   </section>`;
+  if (day.guidance) h += `<div class="card guide">💡 ${esc(day.guidance).split(' • ').join('<br>• ')}</div>`;
   if (!day.exercises.length) h += `<div class="card empty">No exercises in this day yet.<br><br><button class="btn primary" data-act="go" data-view="program">Add exercises</button></div>`;
   day.exercises.forEach((ex, i) => { h += renderExCard(ex, i); });
   if (d.orphans && d.orphans.length) h += `<div class="card small muted">Also in this saved workout (kept as-is): ${d.orphans.map(o => esc(o.name)).join(', ')}</div>`;
-  const doneCount = day.exercises.filter(ex => d.entries[ex.id] && d.entries[ex.id].done).length;
+  const req = day.exercises.filter(ex => !ex.optional);
+  const doneCount = req.filter(ex => d.entries[ex.id] && d.entries[ex.id].done).length;
+  const optDone = day.exercises.filter(ex => ex.optional && d.entries[ex.id] && d.entries[ex.id].done).length;
   h += `<section class="card"><label class="lbl" for="dNotes">Workout notes</label>
     <textarea id="dNotes" data-field="notes" rows="3" placeholder="How did it feel? Energy, sleep, anything to remember…">${esc(d.notes)}</textarea></section>
     <div class="actions">
-      <button class="btn good block" data-act="saveWorkout" style="min-height:56px;font-size:18px">✓ ${d.editingId ? 'Save changes' : 'Finish &amp; save workout'} <span class="small" style="opacity:.85">(${doneCount}/${day.exercises.length} done)</span></button>
+      <button class="btn good block" data-act="saveWorkout" style="min-height:56px;font-size:18px">✓ ${d.editingId ? 'Save changes' : 'Finish &amp; save workout'} <span class="small" style="opacity:.85">(${doneCount}/${req.length} done${optDone ? ' + ' + optDone + ' optional' : ''})</span></button>
       <button class="btn ghost block" data-act="discardDraft">${d.editingId ? 'Cancel editing' : 'Clear this workout'}</button>
     </div>`;
   return h;
 }
 
+/* "Ready to add weight": last session's working sets (those with weight+reps) all reached
+   the top of the target rep range (e.g. 12 for "6–12"). */
+function repTop(ex) { const m = String(ex.reps || '').match(/(\d+)\s*[-–]\s*(\d+)/); return m ? +m[2] : null; }
+function readyToAdd(ex, last) {
+  const top = repTop(ex); if (!top || !last) return false;
+  const ws = last.sets.filter(s => num(s.w) > 0 && num(s.r) != null);
+  return ws.length > 0 && ws.length >= Math.min(+ex.sets || 1, last.sets.length) && ws.every(s => num(s.r) >= top);
+}
 function exStatsHTML(ex, en, prev) {
   const st = setStats(en.sets);
   const best = prev.reduce((m, p) => Math.max(m, p.e1rm), 0);
@@ -359,10 +394,11 @@ function renderExCard(ex, i) {
   return `<section class="card ex ${en.done ? 'done' : ''}" id="card-${esc(ex.id)}">
     <div class="exhead">
       <div class="exnum">${en.done ? '✓' : i + 1}</div>
-      <div class="exname"><h3>${esc(ex.name)}</h3><div class="exmeta">Target: ${target}</div></div>
+      <div class="exname"><h3>${esc(ex.name)}${ex.optional ? ' <span class="pill opt">Optional</span>' : ''}</h3>${ex.note ? `<div class="exnote2">${esc(ex.note)}</div>` : ''}<div class="exmeta">Target: ${target}</div></div>
       <button class="donebtn" data-act="toggleEx" data-ex="${esc(ex.id)}" aria-pressed="${en.done}">${en.done ? 'Done ✓' : 'Mark done'}</button>
     </div>
     <div class="last">${lastTxt}</div>
+    ${readyToAdd(ex, last) ? `<div class="ready" data-ready="${esc(ex.id)}">⬆️ Ready to add weight — you hit ${repTop(ex)} reps on every set last time. Try +${ex.lower ? 10 : 5} ${esc(u)} and aim for 6–8 reps.</div>` : ''}
     <div class="sethead"><span>Set</span><span>Weight (${esc(u)})</span><span></span><span>Reps</span><span>Done</span></div>
     ${rows}
     <div class="exstats" id="st-${esc(ex.id)}">${exStatsHTML(ex, en, prev)}</div>
