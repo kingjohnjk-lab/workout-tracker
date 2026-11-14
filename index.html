@@ -66,6 +66,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .daybtn.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .daybtn.on small{color:var(--accent)}
 .hint{font-size:14px;color:var(--muted);margin-top:8px}
+.sched{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:13px;line-height:1.5}
+.sched .lbl{margin:0 0 4px}
+.sched-row{font-weight:600}
 .ex{padding:12px 12px 10px}
 .ex.done{border-color:var(--good);box-shadow:0 0 0 1px var(--good) inset}
 .exhead{display:flex;gap:10px;align-items:flex-start}
@@ -185,7 +188,7 @@ body.resting .toast{bottom:calc(90px + 140px + env(safe-area-inset-bottom))}
 <script>
 'use strict';
 /* Seed data extracted from the user's spreadsheet (program + any logged History Log rows). */
-const SEED = {"source": {"file": "Workout_Program_Push_Pull_Legs_PR_History.xlsx", "sheets": ["Progress Summary", "History Log", "Day 1 - PUSH", "Day 2 - PULL", "Day 3 - LEGS & CORE"], "extracted": "2026-09-30"}, "program": {"days": [{"id": "push", "name": "PUSH", "exercises": [{"id": "push-mts-incline-chest-press", "name": "MTS Incline Chest Press", "sets": 4, "reps": "", "weight": ""}, {"id": "push-mts-chest-press-flat-or-standard-chest-p", "name": "MTS Chest Press (flat) or standard Chest Press Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "push-pec-deck-machine-chest-fly", "name": "Pec Deck Machine (Chest Fly)", "sets": 4, "reps": "", "weight": ""}, {"id": "push-mts-shoulder-press-or-standard-shoulder", "name": "MTS Shoulder Press or standard Shoulder Press Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "push-lateral-raise-machine", "name": "Lateral Raise Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "push-cable-tricep-pushdown-rope-or-straight-b", "name": "Cable Tricep Pushdown (rope or straight bar)", "sets": 4, "reps": "", "weight": ""}]}, {"id": "pull", "name": "PULL", "exercises": [{"id": "pull-mts-lat-pulldown-front-pulldown", "name": "MTS Lat Pulldown / Front Pulldown", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-mts-seated-row-or-low-row-machine", "name": "MTS Seated Row or Low Row Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-reverse-pec-deck-rear-delt-fly", "name": "Reverse Pec Deck (Rear Delt Fly)", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-bicep-curl-machine", "name": "Bicep Curl Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-cable-bicep-curl-straight-bar-or-ez", "name": "Cable Bicep Curl (straight bar or EZ)", "sets": 4, "reps": "", "weight": ""}, {"id": "pull-lower-back-extension-machine", "name": "Lower Back Extension Machine", "sets": 4, "reps": "", "weight": ""}]}, {"id": "legs-core", "name": "LEGS & CORE", "exercises": [{"id": "legs-core-seated-leg-press-machine", "name": "Seated Leg Press Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-leg-extension-machine", "name": "Leg Extension Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-seated-leg-curl-machine", "name": "Seated Leg Curl Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-seated-calf-raise-machine", "name": "Seated Calf Raise Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-hip-abductor-machine", "name": "Hip Abductor Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-hip-adductor-machine-or-glute-kickback-m", "name": "Hip Adductor Machine or Glute Kickback Machine", "sets": 4, "reps": "", "weight": ""}, {"id": "legs-core-mts-abdominal-crunch-machine", "name": "MTS Abdominal Crunch Machine", "sets": 4, "reps": "", "weight": ""}]}, {"id": "fullbody-a", "name": "Full Body A", "subtitle": "Full body", "guidance": "Muscle retention while cutting • 6–12 reps, stop with 1–2 reps in reserve • When you hit 12 reps on all sets with 1–2 in reserve, add weight next time (about 5 lb upper / 10 lb lower) and drop back toward 6–8 reps.", "exercises": [{"id": "fba-leg-press-squat", "name": "Leg Press / Goblet or Front Squat", "sets": 4, "reps": "6–12", "weight": "", "note": "Leg press, or goblet/front squat with dumbbell, kettlebell, or Olympic bar • 3–4 sets", "optional": false, "lower": true}, {"id": "fba-chest-press", "name": "Chest Press / Cable Fly", "sets": 3, "reps": "6–12", "weight": "", "note": "Chest press (machine, dumbbell, or bar) or cable fly/press", "optional": false, "lower": false}, {"id": "fba-lat-pulldown", "name": "Lat Pulldown / Pull-ups", "sets": 3, "reps": "6–12", "weight": "", "note": "Lat pulldown, or assisted/weighted pull-ups", "optional": false, "lower": false}, {"id": "fba-rdl-hinge", "name": "Romanian Deadlift / KB Swing", "sets": 3, "reps": "6–12", "weight": "", "note": "Romanian deadlift, or kettlebell swing/hinge variation", "optional": false, "lower": true}, {"id": "fba-opt-row", "name": "Optional: Row (cable/DB)", "sets": 3, "reps": "6–12", "weight": "", "note": "Cable or dumbbell row", "optional": true, "lower": false}, {"id": "fba-opt-lateral-raise", "name": "Optional: Lateral Raise", "sets": 3, "reps": "6–12", "weight": "", "note": "Dumbbell, cable, or machine lateral raise", "optional": true, "lower": false}, {"id": "fba-opt-core", "name": "Optional: Core", "sets": 3, "reps": "6–12", "weight": "", "note": "Any core movement — reps or seconds", "optional": true, "lower": false}], "fullBody": true}, {"id": "fullbody-b", "name": "Full Body B", "subtitle": "Full body", "guidance": "Muscle retention while cutting • 6–12 reps, stop with 1–2 reps in reserve • When you hit 12 reps on all sets with 1–2 in reserve, add weight next time (about 5 lb upper / 10 lb lower) and drop back toward 6–8 reps.", "exercises": [{"id": "fbb-rdl-curl-split", "name": "RDL / Leg Curl + Ext / Bulgarian Split Squat", "sets": 4, "reps": "6–12", "weight": "", "note": "Romanian deadlift, or leg curl + leg extension, or Bulgarian split squat • 3–4 sets", "optional": false, "lower": true}, {"id": "fbb-ohp-incline", "name": "Overhead Press / Incline Press", "sets": 3, "reps": "6–12", "weight": "", "note": "Overhead press or incline press", "optional": false, "lower": false}, {"id": "fbb-row", "name": "Seated / Bent-over Row", "sets": 3, "reps": "6–12", "weight": "", "note": "Seated or bent-over row (cable, dumbbell, or bar)", "optional": false, "lower": false}, {"id": "fbb-leg-press-squat", "name": "Leg Press / Squat Variation", "sets": 3, "reps": "6–12", "weight": "", "note": "Leg press or a squat variation — pick a different one from Full Body A", "optional": false, "lower": true}, {"id": "fbb-opt-face-pulls", "name": "Optional: Face Pulls", "sets": 3, "reps": "6–12", "weight": "", "note": "Cable or band face pulls", "optional": true, "lower": false}, {"id": "fbb-opt-arms", "name": "Optional: Biceps/Triceps", "sets": 3, "reps": "6–12", "weight": "", "note": "Any biceps or triceps movement", "optional": true, "lower": false}, {"id": "fbb-opt-core", "name": "Optional: Core", "sets": 3, "reps": "6–12", "weight": "", "note": "Any core movement — reps or seconds", "optional": true, "lower": false}], "fullBody": true}]}, "history": [], "programVersion": 3, "migrations": [{"v": 2, "days": ["fullbody-a", "fullbody-b"]}]};
+const SEED = {"source":{"file":"Workout_Program_Push_Pull_Legs_PR_History.xlsx","sheets":["Progress Summary","History Log","Day 1 - PUSH","Day 2 - PULL","Day 3 - LEGS & CORE"],"extracted":"2026-09-30"},"program":{"days":[{"id":"push","name":"PUSH","exercises":[{"id":"push-mts-incline-chest-press","name":"MTS Incline Chest Press","sets":4,"reps":"","weight":""},{"id":"push-mts-chest-press-flat-or-standard-chest-p","name":"MTS Chest Press (flat) or standard Chest Press Machine","sets":4,"reps":"","weight":""},{"id":"push-pec-deck-machine-chest-fly","name":"Pec Deck Machine (Chest Fly)","sets":4,"reps":"","weight":""},{"id":"push-mts-shoulder-press-or-standard-shoulder","name":"MTS Shoulder Press or standard Shoulder Press Machine","sets":4,"reps":"","weight":""},{"id":"push-lateral-raise-machine","name":"Lateral Raise Machine","sets":4,"reps":"","weight":""},{"id":"push-cable-tricep-pushdown-rope-or-straight-b","name":"Cable Tricep Pushdown (rope or straight bar)","sets":4,"reps":"","weight":""}]},{"id":"pull","name":"PULL","exercises":[{"id":"pull-mts-lat-pulldown-front-pulldown","name":"MTS Lat Pulldown / Front Pulldown","sets":4,"reps":"","weight":""},{"id":"pull-mts-seated-row-or-low-row-machine","name":"MTS Seated Row or Low Row Machine","sets":4,"reps":"","weight":""},{"id":"pull-reverse-pec-deck-rear-delt-fly","name":"Reverse Pec Deck (Rear Delt Fly)","sets":4,"reps":"","weight":""},{"id":"pull-bicep-curl-machine","name":"Bicep Curl Machine","sets":4,"reps":"","weight":""},{"id":"pull-cable-bicep-curl-straight-bar-or-ez","name":"Cable Bicep Curl (straight bar or EZ)","sets":4,"reps":"","weight":""},{"id":"pull-lower-back-extension-machine","name":"Lower Back Extension Machine","sets":4,"reps":"","weight":""}]},{"id":"legs-core","name":"LEGS & CORE","exercises":[{"id":"legs-core-seated-leg-press-machine","name":"Seated Leg Press Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-leg-extension-machine","name":"Leg Extension Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-seated-leg-curl-machine","name":"Seated Leg Curl Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-seated-calf-raise-machine","name":"Seated Calf Raise Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-hip-abductor-machine","name":"Hip Abductor Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-hip-adductor-machine-or-glute-kickback-m","name":"Hip Adductor Machine or Glute Kickback Machine","sets":4,"reps":"","weight":""},{"id":"legs-core-mts-abdominal-crunch-machine","name":"MTS Abdominal Crunch Machine","sets":4,"reps":"","weight":""}]},{"id":"fullbody-a","name":"Full Body A","subtitle":"Full body","guidance":"Muscle retention while cutting • 6–12 reps, stop with 1–2 reps in reserve • When you hit 12 reps on all sets with 1–2 in reserve, add weight next time (about 5 lb upper / 10 lb lower) and drop back toward 6–8 reps.","exercises":[{"id":"fba-leg-press-squat","name":"Leg Press / Goblet or Front Squat","sets":4,"reps":"6–12","weight":"","note":"Leg press, or goblet/front squat with dumbbell, kettlebell, or Olympic bar • 3–4 sets","optional":false,"lower":true},{"id":"fba-chest-press","name":"Chest Press / Cable Fly","sets":3,"reps":"6–12","weight":"","note":"Chest press (machine, dumbbell, or bar) or cable fly/press","optional":false,"lower":false},{"id":"fba-lat-pulldown","name":"Lat Pulldown / Pull-ups","sets":3,"reps":"6–12","weight":"","note":"Lat pulldown, or assisted/weighted pull-ups","optional":false,"lower":false},{"id":"fba-rdl-hinge","name":"Romanian Deadlift / KB Swing","sets":3,"reps":"6–12","weight":"","note":"Romanian deadlift, or kettlebell swing/hinge variation","optional":false,"lower":true},{"id":"fba-opt-row","name":"Optional: Row (cable/DB)","sets":3,"reps":"6–12","weight":"","note":"Cable or dumbbell row","optional":true,"lower":false},{"id":"fba-opt-lateral-raise","name":"Optional: Lateral Raise","sets":3,"reps":"6–12","weight":"","note":"Dumbbell, cable, or machine lateral raise","optional":true,"lower":false},{"id":"fba-opt-core","name":"Optional: Core","sets":3,"reps":"6–12","weight":"","note":"Any core movement — reps or seconds","optional":true,"lower":false}],"fullBody":true},{"id":"fullbody-b","name":"Full Body B","subtitle":"Full body","guidance":"Muscle retention while cutting • 6–12 reps, stop with 1–2 reps in reserve • When you hit 12 reps on all sets with 1–2 in reserve, add weight next time (about 5 lb upper / 10 lb lower) and drop back toward 6–8 reps.","exercises":[{"id":"fbb-rdl-curl-split","name":"RDL / Leg Curl + Ext / Bulgarian Split Squat","sets":4,"reps":"6–12","weight":"","note":"Romanian deadlift, or leg curl + leg extension, or Bulgarian split squat • 3–4 sets","optional":false,"lower":true},{"id":"fbb-ohp-incline","name":"Overhead Press / Incline Press","sets":3,"reps":"6–12","weight":"","note":"Overhead press or incline press","optional":false,"lower":false},{"id":"fbb-row","name":"Seated / Bent-over Row","sets":3,"reps":"6–12","weight":"","note":"Seated or bent-over row (cable, dumbbell, or bar)","optional":false,"lower":false},{"id":"fbb-leg-press-squat","name":"Leg Press / Squat Variation","sets":3,"reps":"6–12","weight":"","note":"Leg press or a squat variation — pick a different one from Full Body A","optional":false,"lower":true},{"id":"fbb-opt-face-pulls","name":"Optional: Face Pulls","sets":3,"reps":"6–12","weight":"","note":"Cable or band face pulls","optional":true,"lower":false},{"id":"fbb-opt-arms","name":"Optional: Biceps/Triceps","sets":3,"reps":"6–12","weight":"","note":"Any biceps or triceps movement","optional":true,"lower":false},{"id":"fbb-opt-core","name":"Optional: Core","sets":3,"reps":"6–12","weight":"","note":"Any core movement — reps or seconds","optional":true,"lower":false}],"fullBody":true},{"id":"upper-5x5","name":"Upper 5×5","subtitle":"Tue","guidance":"Free-weight 5×5 • Suggested Tuesday • Rest 2–3 min on the heavy compounds • If you hit 5 reps on all 5 sets last time, add 5 lb this session; if you missed, repeat the same weight.","manual":true,"scheme":"5x5","restSecs":180,"exercises":[{"id":"u55-bench","name":"Bench Press / Incline Bench","sets":5,"reps":"5","weight":"","note":"Barbell bench or incline bench • 5×5","optional":false,"lower":false,"scheme":"5x5","addLb":5,"restSecs":180},{"id":"u55-ohp","name":"Overhead Press / Seated DB Press","sets":5,"reps":"5","weight":"","note":"Standing overhead press or seated dumbbell press • 5×5","optional":false,"lower":false,"scheme":"5x5","addLb":5,"restSecs":180},{"id":"u55-row","name":"Barbell / DB Row","sets":5,"reps":"5","weight":"","note":"Barbell or dumbbell row • 5×5","optional":false,"lower":false,"scheme":"5x5","addLb":5,"restSecs":180},{"id":"u55-opt-pulldown","name":"Pull-ups / Lat Pulldown","sets":3,"reps":"8–12","weight":"","note":"Pull-ups, assisted/weighted pull-ups, or lat pulldown • 3×8–12","optional":true,"lower":false},{"id":"u55-opt-tri-face","name":"Triceps or Face Pulls","sets":3,"reps":"10–15","weight":"","note":"Any triceps movement or face pulls • 2–3×10–15","optional":true,"lower":false}]},{"id":"lower-5x5","name":"Lower 5×5","subtitle":"Fri","guidance":"Free-weight 5×5 • Suggested Friday • Rest 2–3 min on the heavy compounds • If you hit 5 reps on all required sets last time, add 10 lb (or +5 lb for a goblet/DB squat); if you missed, repeat the same weight.","manual":true,"scheme":"5x5","restSecs":180,"exercises":[{"id":"l55-squat","name":"Squat (Back or Goblet/DB)","sets":5,"reps":"5","weight":"","note":"Back squat, or goblet/DB squat to start • 5×5 • After a clean 5×5 add 10 lb, or +5 lb if using goblet/DB","optional":false,"lower":true,"scheme":"5x5","addLb":10,"addLbDb":5,"restSecs":180},{"id":"l55-deadlift","name":"Romanian or Conventional Deadlift","sets":5,"reps":"5","weight":"","note":"RDL or conventional deadlift • 3–5×5 (remove unused set rows if you only do 3)","optional":false,"lower":true,"scheme":"3-5x5","addLb":10,"restSecs":180},{"id":"l55-opt-legpress","name":"Leg Press / Bulgarian Split Squat","sets":3,"reps":"8–12","weight":"","note":"Extra volume • 3×8–12","optional":true,"lower":true},{"id":"l55-opt-calf","name":"Calf Raises","sets":3,"reps":"10–15","weight":"","note":"Seated or standing calf raises","optional":true,"lower":true},{"id":"l55-opt-core","name":"Core","sets":3,"reps":"8–12","weight":"","note":"Any core movement — reps or seconds","optional":true,"lower":false}]}]},"history":[],"programVersion":4,"migrations":[{"v":2,"days":["fullbody-a","fullbody-b"]},{"v":4,"days":["upper-5x5","lower-5x5"]}]};
 const KEY = 'workoutTracker.v1';
 
 /* ---------- helpers ---------- */
@@ -291,8 +294,8 @@ const unit = () => state.unit || 'lb';
 function suggestedDayId() {
   const ws = sortedWorkouts(); const ds = days();
   if (!ds.length) return null;
-  /* full-body days are picked manually, never suggested */
-  const rot = ds.filter(d => !d.fullBody && d.dow == null); const pool = rot.length ? rot : ds;
+  /* full-body and 5×5 days are picked manually, never auto-suggested */
+  const rot = ds.filter(d => !d.fullBody && !d.manual && d.dow == null); const pool = rot.length ? rot : ds;
   if (!ws.length) return pool[0].id;
   const last = ws[ws.length - 1];
   const i = pool.findIndex(d => d.id === last.dayId || norm(d.name) === norm(last.dayName));
@@ -303,16 +306,60 @@ function ensureDraft() {
   if (!state.draft || !dayById(state.draft.dayId)) { state.draft = newDraft(suggestedDayId()); save(); }
   return state.draft;
 }
+function isFiveByFive(ex) { return ex && (ex.scheme === '5x5' || ex.scheme === '3-5x5'); }
+function fiveNeed(ex) { return ex.scheme === '3-5x5' ? 3 : Math.max(5, +ex.sets || 5); }
+function addAmount(ex) { return num(ex && ex.addLb) != null ? num(ex.addLb) : (ex && ex.lower ? 10 : 5); }
+function lastWorking(last) { return last ? last.sets.filter(s => num(s.w) > 0 && num(s.r) != null) : []; }
+function fiveByFiveHit(ex, last) {
+  const ws = lastWorking(last);
+  return ws.length >= fiveNeed(ex) && ws.every(s => num(s.r) >= 5);
+}
+function suggestedWeight(ex, last) {
+  const ws = lastWorking(last); if (!ws.length) return null;
+  const base = Math.min(...ws.map(s => num(s.w)));
+  return fiveByFiveHit(ex, last) ? base + addAmount(ex) : base;
+}
 function draftEntry(ex) {
   const d = state.draft;
-  if (!d.entries[ex.id]) d.entries[ex.id] = { sets: Array.from({length: Math.max(1, +ex.sets || 4)}, () => ({w: '', r: '', done: false})), done: false, note: '' };
+  if (!d.entries[ex.id]) {
+    const prev = sessionsFor(ex, d.editingId), last = prev[prev.length - 1];
+    const n = Math.max(1, +ex.sets || 4);
+    const prefill = isFiveByFive(ex) && last;
+    d.entries[ex.id] = {
+      sets: Array.from({length: n}, (_, k) => {
+        const row = {w: '', r: '', done: false};
+        if (prefill) { const ph = placeholders(ex, k, last); if (ph.w) row.w = ph.w; if (ph.r) row.r = ph.r; }
+        return row;
+      }),
+      done: false, note: ''
+    };
+  }
   return d.entries[ex.id];
+}
+function isAutoPrefill(ex, en) {
+  if (!ex || !isFiveByFive(ex) || !en) return false;
+  if (en.done || en.note || (en.sets || []).some(s => s.done)) return false;
+  const last = sessionsFor(ex, state.draft && state.draft.editingId).slice(-1)[0];
+  if (!last) return false;
+  return (en.sets || []).every((s, k) => { const ph = placeholders(ex, k, last); return String(s.w) === String(ph.w || '') && String(s.r) === String(ph.r || ''); });
+}
+function entryHasUserData(en, ex) {
+  if (!en) return false;
+  if (ex && isAutoPrefill(ex, en)) return false;
+  return hasData(en.sets) || en.done || en.note;
 }
 function draftHasData() {
   const d = state.draft; if (!d) return false;
-  return !!d.notes || Object.values(d.entries).some(e => hasData(e.sets) || e.done || e.note);
+  if (d.notes) return true;
+  return Object.entries(d.entries).some(([id, en]) => entryHasUserData(en, exById(id)));
 }
 function placeholders(ex, k, last) {
+  if (isFiveByFive(ex) && last) {
+    const sug = suggestedWeight(ex, last);
+    const ls = last.sets[k] ? last.sets[k] : (last.sets.length ? last.sets[last.sets.length - 1] : null);
+    const w = sug != null ? String(sug) : (ls && num(ls.w) != null ? String(num(ls.w)) : '');
+    return { w, r: '5' };
+  }
   const ls = last && last.sets[k] ? last.sets[k] : (last && last.sets.length ? last.sets[last.sets.length - 1] : null);
   const w = ls && num(ls.w) != null ? String(num(ls.w)) : (num(ex.weight) != null ? String(num(ex.weight)) : '');
   const r = ls && num(ls.r) != null ? String(num(ls.r)) : firstNum(ex.reps);
@@ -328,6 +375,7 @@ function render() {
   const fn = {log: renderLog, history: renderHistory, progress: renderProgress, program: renderProgram, data: renderData}[view];
   $('#app').innerHTML = fn();
   if (view === 'progress') wireProgress();
+  syncRestLabels();
 }
 
 function backupBanner() {
@@ -347,7 +395,11 @@ function renderLog() {
     <input type="date" id="dDate" data-field="date" value="${esc(d.date)}">
     <div class="lbl" style="margin-top:12px">Which workout today?</div>
     <div class="daypick">${days().map((x, i) => `<button class="daybtn ${x.id === d.dayId ? 'on' : ''}" data-act="pickDay" data-id="${esc(x.id)}"><small>${esc(x.subtitle || 'Day ' + (i + 1))}</small>${esc(x.name)}</button>`).join('')}</div>
-    ${!d.editingId && sug && state.workouts.length ? `<div class="hint">Up next in your rotation: <b>${esc(dayById(sug).name)}</b></div>` : ''}
+    ${!d.editingId && sug && state.workouts.length ? `<div class="hint">Up next in your PPL rotation: <b>${esc(dayById(sug).name)}</b> (Upper/Lower 5×5 and Full Body are pick-when-you-want)</div>` : ''}
+    <div class="sched"><div class="lbl">Suggested week</div>
+      <div class="sched-row">Mon &amp; Wed bootcamp · Tue Upper 5×5 · Thu rest · Fri Lower 5×5 · Sat optional · Sun rest</div>
+      <div class="hint" style="margin-top:6px">Saturday (optional): an extra Lower 5×5, or a light Full Body A/B. Choose it above — nothing is auto-selected.</div>
+    </div>
   </section>`;
   if (day.guidance) h += `<div class="card guide">💡 ${esc(day.guidance).split(' • ').join('<br>• ')}</div>`;
   if (!day.exercises.length) h += `<div class="card empty">No exercises in this day yet.<br><br><button class="btn primary" data-act="go" data-view="program">Add exercises</button></div>`;
@@ -369,6 +421,7 @@ function renderLog() {
    the top of the target rep range (e.g. 12 for "6–12"). */
 function repTop(ex) { const m = String(ex.reps || '').match(/(\d+)\s*[-–]\s*(\d+)/); return m ? +m[2] : null; }
 function readyToAdd(ex, last) {
+  if (isFiveByFive(ex)) return fiveByFiveHit(ex, last);
   const top = repTop(ex); if (!top || !last) return false;
   const ws = last.sets.filter(s => num(s.w) > 0 && num(s.r) != null);
   return ws.length > 0 && ws.length >= Math.min(+ex.sets || 1, last.sets.length) && ws.every(s => num(s.r) >= top);
@@ -381,6 +434,19 @@ function exStatsHTML(ex, en, prev) {
   return `<span>Reps <b>${fmt(st.reps) || 0}</b></span><span>Volume <b>${fmt(st.vol) || 0}</b></span><span>Est. 1RM <b>${fmt(st.e1rm) || '–'}</b></span>${best ? `<span>Best <b>${fmt(best)}</b></span>` : ''}${badge}`;
 }
 
+function overloadHint(ex, last, u) {
+  if (!last) return '';
+  if (isFiveByFive(ex)) {
+    const need = fiveNeed(ex);
+    if (fiveByFiveHit(ex, last)) {
+      const extra = num(ex.addLbDb) != null ? ` (or +${fmt(num(ex.addLbDb))} ${esc(u)} if using a goblet/DB variation)` : '';
+      return `<div class="ready" data-ready="${esc(ex.id)}">⬆️ You hit ${need}×5 last time. Try +${fmt(addAmount(ex))} ${esc(u)}${extra} — already pre-filled.</div>`;
+    }
+    return `<div class="hint" data-ready="${esc(ex.id)}">↔️ Repeat the same weight — not all sets were 5 reps last time. Pre-filled from last session.</div>`;
+  }
+  if (readyToAdd(ex, last)) return `<div class="ready" data-ready="${esc(ex.id)}">⬆️ Ready to add weight — you hit ${repTop(ex)} reps on every set last time. Try +${ex.lower ? 10 : 5} ${esc(u)} and aim for 6–8 reps.</div>`;
+  return '';
+}
 function renderExCard(ex, i) {
   const d = state.draft, en = draftEntry(ex), u = unit();
   const prev = sessionsFor(ex, d.editingId), last = prev[prev.length - 1];
@@ -404,7 +470,7 @@ function renderExCard(ex, i) {
       <button class="donebtn" data-act="toggleEx" data-ex="${esc(ex.id)}" aria-pressed="${en.done}">${en.done ? 'Done ✓' : 'Mark done'}</button>
     </div>
     <div class="last">${lastTxt}</div>
-    ${readyToAdd(ex, last) ? `<div class="ready" data-ready="${esc(ex.id)}">⬆️ Ready to add weight — you hit ${repTop(ex)} reps on every set last time. Try +${ex.lower ? 10 : 5} ${esc(u)} and aim for 6–8 reps.</div>` : ''}
+    ${overloadHint(ex, last, u)}
     <div class="sethead"><span>Set</span><span>Weight (${esc(u)})</span><span></span><span>Reps</span><span>Done</span></div>
     ${rows}
     <div class="exstats" id="st-${esc(ex.id)}">${exStatsHTML(ex, en, prev)}</div>
@@ -596,7 +662,7 @@ function renderData() {
   const n = state.workouts.length, rows = state.workouts.reduce((a, w) => a + (w.entries || []).length, 0);
   return `<section class="card"><h2>Units</h2><div class="small muted" style="margin-bottom:8px">Label only — numbers are not converted.</div>
     <div class="seg">${['lb', 'kg'].map(x => `<button data-act="unit" data-u="${x}" class="${unit() === x ? 'on' : ''}">${x}</button>`).join('')}</div></section>
-  <section class="card"><h2>Rest timer</h2><div class="small muted" style="margin-bottom:8px">Tap the ⏱ 90s button on the Log screen any time. Optionally show a “Start rest” shortcut after you tick a set ✓ (it never starts by itself).</div>
+  <section class="card"><h2>Rest timer</h2><div class="small muted" style="margin-bottom:8px">Tap the ⏱ rest button on the Log screen any time (90s on PPL / Full Body days, 3:00 on Upper/Lower 5×5 compounds). Optionally show a “Start rest” shortcut after you tick a set ✓ (it never starts by itself).</div>
     <div class="seg">${[['on', 'Offer after ✓'], ['off', 'Button only']].map(([v, l]) => `<button data-act="restOffer" data-v="${v}" class="${(rest.offer !== false) === (v === 'on') ? 'on' : ''}">${l}</button>`).join('')}</div></section>
   <section class="card"><h2>Back up your data</h2>
     <div class="small muted" style="margin-bottom:10px">Everything is stored only in this browser on this device (${n} workout${n === 1 ? '' : 's'}, ${rows} exercise entries). Export regularly so you never lose it. ${state.lastExport ? 'Last export: ' + esc(new Date(state.lastExport).toLocaleString()) + '.' : 'No export yet.'}</div>
@@ -822,7 +888,7 @@ document.addEventListener('click', e => {
     case 'go': go(b.dataset.view); break;
     case 'pickDay': {
       if (b.dataset.id === d.dayId) break;
-      const hasAny = Object.values(d.entries).some(en => hasData(en.sets) || en.done || en.note);
+      const hasAny = Object.entries(d.entries).some(([id, en]) => entryHasUserData(en, exById(id)));
       if (hasAny && !confirm('Switch workout day? What you entered for ' + dayById(d.dayId).name + ' will be cleared.')) break;
       d.dayId = b.dataset.id; d.entries = {}; d.orphans = d.editingId ? d.orphans : []; save(); render(); break;
     }
@@ -918,6 +984,21 @@ document.addEventListener('change', e => {
    so it stays right if the phone screen is off / the tab is in the background. */
 const REST_KEY = 'workoutTracker.rest';
 const REST_SECS = 90;
+function restDurationSecs() {
+  const day = state && state.draft && dayById(state.draft.dayId);
+  if (day && (day.restSecs || day.scheme === '5x5')) return day.restSecs || 180;
+  return REST_SECS;
+}
+function restDurationLabel() {
+  const secs = restDurationSecs();
+  return secs % 60 === 0 && secs >= 60 ? (secs / 60) + ':00' : restFmt(secs * 1000);
+}
+function syncRestLabels() {
+  const lab = restDurationLabel(), secs = restDurationSecs();
+  const fab = $('#restFab'); if (fab) { const short = secs === 90 ? '90s' : (secs % 60 === 0 ? (secs / 60) + 'm' : lab); fab.innerHTML = '<span class="ic">⏱</span>' + short; fab.setAttribute('aria-label', 'Start ' + lab + ' rest timer'); }
+  const offer = $('#restOffer'); if (offer) offer.textContent = '▶ Start rest ' + lab;
+  const restart = $('#restRestart'); if (restart) { restart.textContent = '↺ ' + lab; restart.setAttribute('aria-label', 'Restart at ' + lab); }
+}
 let rest = (() => { try { const r = JSON.parse(localStorage.getItem(REST_KEY) || 'null'); if (r && typeof r === 'object') return r; } catch (e) {} return {}; })();
 /* rest = { endAt: ms|null (running), pausedLeft: ms|null (paused), overAt: ms|null (finished, showing "Rest over"), offer: bool } */
 let restTick = null, restEndT = null, restOfferT = null, restAudio = null, restWake = null;
@@ -952,7 +1033,7 @@ function restSchedule() {
 }
 function restStart() {
   restUnlockAudio();
-  rest.endAt = Date.now() + REST_SECS * 1000; rest.pausedLeft = null; rest.overAt = null; restSave();
+  rest.endAt = Date.now() + restDurationSecs() * 1000; rest.pausedLeft = null; rest.overAt = null; restSave();
   restOfferHide(); restWakeOn(); restSchedule(); restUpdate();
 }
 function restPauseToggle() {
@@ -986,13 +1067,14 @@ function restUpdate() {
   const left = restLeft(), over = !!rest.overAt && left == null, active = left != null || over;
   document.body.classList.toggle('resting', active);
   panel.classList.toggle('over', over); panel.classList.toggle('paused', !rest.endAt && rest.pausedLeft != null);
-  $('#restTime').textContent = over ? 'Rest over 💪' : restFmt(left == null ? REST_SECS * 1000 : left);
+  $('#restTime').textContent = over ? 'Rest over 💪' : restFmt(left == null ? restDurationSecs() * 1000 : left);
   $('#restLbl').textContent = over ? 'Done' : (rest.endAt ? 'Rest' : 'Paused');
   $('#restPause').textContent = rest.endAt ? '⏸ Pause' : '▶ Resume';
   $('#restCancel').textContent = over ? 'OK' : '✕';
   $('#restCancel').setAttribute('aria-label', over ? 'Dismiss' : 'Cancel rest timer');
   const title = 'Workout Tracker';
   document.title = rest.endAt ? restFmt(left) + ' rest · ' + title : (over ? 'Rest over · ' + title : title);
+  if (left == null && !over) syncRestLabels();
 }
 function restOfferShow() {
   if (rest.offer === false || rest.endAt || rest.pausedLeft != null) return;
